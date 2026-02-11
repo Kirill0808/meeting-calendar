@@ -28,8 +28,16 @@ type CalendarStore = CalendarState & CalendarActions;
 export const useCalendarStore = create<CalendarStore>()(
    persist(
       (set, get) => ({
-         events: [],
-         currentDate: new Date(),
+         events: [
+            {
+               id: '1',
+               title: 'Meeting',
+               start: new Date(2026, 1, 9, 9, 30),
+               end: new Date(2026, 1, 9, 11, 0),
+               color: '#3b82f6',
+            },
+         ],
+         currentDate: new Date(2026, 1, 9),
          currentView: 'week',
 
          addEvent: (data) =>
@@ -84,6 +92,16 @@ export const useCalendarStore = create<CalendarStore>()(
          partialize: (state) => ({
             events: state.events,
          }),
+
+         onRehydrateStorage: () => (state) => {
+            if (!state) return;
+
+            state.events = state.events.map((event) => ({
+               ...event,
+               start: new Date(event.start),
+               end: new Date(event.end),
+            }));
+         },
       }
    )
 );

@@ -1,7 +1,9 @@
-import Calendar from './components/Calendar/Calendar';
+import Calendar from '@/components/Calendar/Calendar';
 
-function App() {
-   return <Calendar />;
+export default function App() {
+   return (
+      <div className="h-screen bg-neutral-900 text-white">
+         <Calendar />
+      </div>
+   );
 }
-
-export default App;
