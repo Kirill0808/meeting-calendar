@@ -8,9 +8,12 @@ import {
    addDays,
    addMinutes,
    isSameDay,
+   format,
 } from 'date-fns';
 
-import type { CalendarView, TimeSlot } from '@/types';
+import { uk } from 'date-fns/locale';
+
+import type { CalendarView, TimeSlot, CalendarEvent } from '@/types';
 
 /* =========================
    Base helpers
@@ -100,3 +103,51 @@ export const generateTimeSlots = (
 export const isToday = (date: Date) => {
    return isSameDay(date, new Date());
 };
+
+/* =========================
+   Week helpers
+========================= */
+
+export const getWeekDays = (date: Date): Date[] => {
+   const { start, end } = getWeekRange(date);
+   return getDaysInRange(start, end);
+};
+
+/* =========================
+   Events
+========================= */
+
+export function formatDayHeader(date: Date): string {
+   return format(date, 'EEE d');
+}
+
+export function getEventsForDay(events: CalendarEvent[], day: Date): CalendarEvent[] {
+   return events.filter((event) => isSameDay(event.start, day));
+}
+
+export function formatPeriodLabel(view: CalendarView, date: Date) {
+   switch (view) {
+      case 'day':
+         return format(date, 'EEEE, d MMMM yyyy', { locale: uk });
+
+      case 'week': {
+         const start = startOfWeek(date, { weekStartsOn: 1 });
+         const end = endOfWeek(date, { weekStartsOn: 1 });
+
+         return `${format(start, 'd MMM')} – ${format(end, 'd MMM yyyy')}`;
+      }
+
+      case 'month':
+         return format(date, 'MMMM yyyy', { locale: uk });
+
+      default:
+         return '';
+   }
+}
+
+export function formatTime(date: Date) {
+   return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+   });
+}

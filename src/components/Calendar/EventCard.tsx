@@ -1,5 +1,45 @@
-const EventCard = () => {
-   return <div>EventCard</div>;
-};
+import type { CalendarEvent } from '@/types';
+import { formatTime } from '@/utils/date';
+import clsx from 'clsx';
 
-export default EventCard;
+interface EventCardProps {
+   event: CalendarEvent;
+   top: number;
+   height: number;
+   column: number;
+   totalColumns: number;
+   onClick?: (event: CalendarEvent) => void;
+}
+
+export default function EventCard({
+   event,
+   top,
+   height,
+   column,
+   totalColumns,
+   onClick,
+}: EventCardProps) {
+   return (
+      <div
+         onClick={() => onClick?.(event)}
+         style={{
+            top,
+            height,
+            backgroundColor: event.color || '#2563eb',
+            width: `calc(${100 / totalColumns}% - 4px)`,
+            left: `calc(${(column * 100) / totalColumns}% + 2px)`,
+         }}
+         className={clsx(
+            'absolute rounded-md px-2 py-1 text-xs text-white',
+            'cursor-pointer overflow-hidden shadow',
+            'hover:brightness-110',
+            'outline outline-1 outline-black/20'
+         )}
+      >
+         <div className="font-medium truncate">{event.title}</div>
+         <div className="opacity-80">
+            {formatTime(event.start)} – {formatTime(event.end)}
+         </div>
+      </div>
+   );
+}
