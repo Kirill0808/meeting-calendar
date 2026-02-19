@@ -8,6 +8,11 @@ type CalendarState = {
    events: CalendarEvent[];
    currentDate: Date;
    currentView: CalendarView;
+
+   // UI state
+   isModalOpen: boolean;
+   editingEventId: string | null;
+   selectedSlot: Date | null;
 };
 
 type CalendarActions = {
@@ -21,6 +26,11 @@ type CalendarActions = {
    goToday: () => void;
    goNext: () => void;
    goPrev: () => void;
+
+   // UI
+   openCreateModal: (slotDate: Date) => void;
+   openEditModal: (eventId: string) => void;
+   closeModal: () => void;
 };
 
 type CalendarStore = CalendarState & CalendarActions;
@@ -28,17 +38,34 @@ type CalendarStore = CalendarState & CalendarActions;
 export const useCalendarStore = create<CalendarStore>()(
    persist(
       (set, get) => ({
-         events: [
-            {
-               id: '1',
-               title: 'Meeting',
-               start: new Date(2026, 1, 9, 9, 30),
-               end: new Date(2026, 1, 9, 11, 0),
-               color: '#3b82f6',
-            },
-         ],
-         currentDate: new Date(2026, 1, 9),
+         events: [],
+         currentDate: new Date(),
          currentView: 'week',
+
+         isModalOpen: false,
+         editingEventId: null,
+         selectedSlot: null,
+
+         openCreateModal: (slotDate) =>
+            set({
+               isModalOpen: true,
+               editingEventId: null,
+               selectedSlot: slotDate,
+            }),
+
+         openEditModal: (eventId) =>
+            set({
+               isModalOpen: true,
+               editingEventId: eventId,
+               selectedSlot: null,
+            }),
+
+         closeModal: () =>
+            set({
+               isModalOpen: false,
+               editingEventId: null,
+               selectedSlot: null,
+            }),
 
          addEvent: (data) =>
             set((state) => ({
