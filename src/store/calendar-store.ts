@@ -8,6 +8,11 @@ type CalendarState = {
    events: CalendarEvent[];
    currentDate: Date;
    currentView: CalendarView;
+
+   // UI state
+   isModalOpen: boolean;
+   editingEventId: string | null;
+   selectedSlot: Date | null;
 };
 
 type CalendarActions = {
@@ -21,24 +26,46 @@ type CalendarActions = {
    goToday: () => void;
    goNext: () => void;
    goPrev: () => void;
+
+   // UI
+   openCreateModal: (slotDate: Date) => void;
+   openEditModal: (eventId: string) => void;
+   closeModal: () => void;
 };
 
 type CalendarStore = CalendarState & CalendarActions;
 
 export const useCalendarStore = create<CalendarStore>()(
    persist(
-      (set, get) => ({
-         events: [
-            {
-               id: '1',
-               title: 'Meeting',
-               start: new Date(2026, 1, 9, 9, 30),
-               end: new Date(2026, 1, 9, 11, 0),
-               color: '#3b82f6',
-            },
-         ],
-         currentDate: new Date(2026, 1, 9),
+      (set) => ({
+         events: [],
+         currentDate: new Date(),
          currentView: 'week',
+
+         isModalOpen: false,
+         editingEventId: null,
+         selectedSlot: null,
+
+         openCreateModal: (slotDate) =>
+            set({
+               isModalOpen: true,
+               editingEventId: null,
+               selectedSlot: slotDate,
+            }),
+
+         openEditModal: (eventId) =>
+            set({
+               isModalOpen: true,
+               editingEventId: eventId,
+               selectedSlot: null,
+            }),
+
+         closeModal: () =>
+            set({
+               isModalOpen: false,
+               editingEventId: null,
+               selectedSlot: null,
+            }),
 
          addEvent: (data) =>
             set((state) => ({
@@ -63,29 +90,32 @@ export const useCalendarStore = create<CalendarStore>()(
 
          setCurrentDate: (date) => set({ currentDate: date }),
          setCurrentView: (view) => set({ currentView: view }),
+
          goToday: () => set({ currentDate: new Date() }),
 
-         goNext: () => {
-            const { currentView, currentDate } = get();
-            const nextDate = {
-               day: addDays(currentDate, 1),
-               week: addWeeks(currentDate, 1),
-               month: addMonths(currentDate, 1),
-            }[currentView];
+         goNext: () =>
+            set((state) => {
+               const nextDate =
+                  {
+                     day: addDays(state.currentDate, 1),
+                     week: addWeeks(state.currentDate, 1),
+                     month: addMonths(state.currentDate, 1),
+                  }[state.currentView] ?? state.currentDate;
 
-            set({ currentDate: nextDate });
-         },
+               return { currentDate: nextDate };
+            }),
 
-         goPrev: () => {
-            const { currentView, currentDate } = get();
-            const prevDate = {
-               day: subDays(currentDate, 1),
-               week: subWeeks(currentDate, 1),
-               month: subMonths(currentDate, 1),
-            }[currentView];
+         goPrev: () =>
+            set((state) => {
+               const prevDate =
+                  {
+                     day: subDays(state.currentDate, 1),
+                     week: subWeeks(state.currentDate, 1),
+                     month: subMonths(state.currentDate, 1),
+                  }[state.currentView] ?? state.currentDate;
 
-            set({ currentDate: prevDate });
-         },
+               return { currentDate: prevDate };
+            }),
       }),
       {
          name: 'calendar-store',

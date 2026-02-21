@@ -30,14 +30,14 @@ export default function EventCard({
             left: `calc(${(column * 100) / totalColumns}% + 2px)`,
          }}
          className={clsx(
-            'absolute rounded-md px-2 py-1 text-xs text-white',
-            'cursor-pointer overflow-hidden shadow',
-            'hover:brightness-110',
-            'outline outline-1 outline-black/20'
+            'absolute rounded-lg px-2 py-1 text-xs text-white',
+            'cursor-pointer overflow-hidden',
+            'shadow-sm hover:shadow-md transition-all',
+            'hover:brightness-110'
          )}
       >
          <div className="font-medium truncate">{event.title}</div>
-         <div className="opacity-80">
+         <div className="opacity-90">
             {formatTime(event.start)} – {formatTime(event.end)}
          </div>
       </div>

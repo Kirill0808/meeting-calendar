@@ -1,5 +1,5 @@
 import type { CalendarEvent } from '@/types';
-import { isSameDay } from 'date-fns';
+import { isSameDay, isToday } from 'date-fns';
 import clsx from 'clsx';
 
 import EventCard from './EventCard';
@@ -20,25 +20,26 @@ export default function DayColumn({
    onSlotClick,
    onEventClick,
 }: DayColumnProps) {
-   const isToday = isSameDay(date, new Date());
+   const today = isToday(date);
 
    const dayEvents = events.filter((event) => isSameDay(event.start, date));
+
    const layoutEvents = calculateEventLayout(dayEvents);
 
    return (
-      <div className={clsx('relative border-l border-white/10', isToday && 'bg-white/5')}>
+      <div className={clsx('relative border-l border-gray-200', today ? 'bg-blue-50' : 'bg-white')}>
          {/* Time slots */}
-         <div className="flex flex-col">
+         <div className="relative z-0 flex flex-col">
             {hours.map((hour) => (
                <div
                   key={hour}
-                  className="h-16 border-t border-white/5 hover:bg-white/10"
+                  className="h-16 border-b border-gray-200 hover:bg-blue-100 cursor-pointer transition"
                   onClick={() => onSlotClick?.(date, hour)}
                />
             ))}
          </div>
 
-         {/* Events layer */}
+         {/* Events */}
          <div className="absolute inset-0 z-10 pointer-events-none">
             {layoutEvents.map(({ event, column, totalColumns }) => {
                const { top, height } = getEventPosition(event);
