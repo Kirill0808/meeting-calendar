@@ -37,7 +37,7 @@ type CalendarStore = CalendarState & CalendarActions;
 
 export const useCalendarStore = create<CalendarStore>()(
    persist(
-      (set, get) => ({
+      (set) => ({
          events: [],
          currentDate: new Date(),
          currentView: 'week',
@@ -90,29 +90,32 @@ export const useCalendarStore = create<CalendarStore>()(
 
          setCurrentDate: (date) => set({ currentDate: date }),
          setCurrentView: (view) => set({ currentView: view }),
+
          goToday: () => set({ currentDate: new Date() }),
 
-         goNext: () => {
-            const { currentView, currentDate } = get();
-            const nextDate = {
-               day: addDays(currentDate, 1),
-               week: addWeeks(currentDate, 1),
-               month: addMonths(currentDate, 1),
-            }[currentView];
+         goNext: () =>
+            set((state) => {
+               const nextDate =
+                  {
+                     day: addDays(state.currentDate, 1),
+                     week: addWeeks(state.currentDate, 1),
+                     month: addMonths(state.currentDate, 1),
+                  }[state.currentView] ?? state.currentDate;
 
-            set({ currentDate: nextDate });
-         },
+               return { currentDate: nextDate };
+            }),
 
-         goPrev: () => {
-            const { currentView, currentDate } = get();
-            const prevDate = {
-               day: subDays(currentDate, 1),
-               week: subWeeks(currentDate, 1),
-               month: subMonths(currentDate, 1),
-            }[currentView];
+         goPrev: () =>
+            set((state) => {
+               const prevDate =
+                  {
+                     day: subDays(state.currentDate, 1),
+                     week: subWeeks(state.currentDate, 1),
+                     month: subMonths(state.currentDate, 1),
+                  }[state.currentView] ?? state.currentDate;
 
-            set({ currentDate: prevDate });
-         },
+               return { currentDate: prevDate };
+            }),
       }),
       {
          name: 'calendar-store',

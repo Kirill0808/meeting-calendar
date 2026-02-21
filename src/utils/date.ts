@@ -145,9 +145,35 @@ export function formatPeriodLabel(view: CalendarView, date: Date) {
    }
 }
 
-export function formatTime(date: Date) {
-   return date.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-   });
+export function formatTime(date: Date): string {
+   return format(date, 'HH:mm');
+}
+
+export function parseTime(baseDate: Date, time: string): Date {
+   const [hours, minutes] = time.split(':').map(Number);
+
+   const result = new Date(baseDate);
+   result.setHours(hours, minutes, 0, 0);
+
+   return result;
+}
+
+export function addHoursToTime(time: string, hours: number): string {
+   const [h, m] = time.split(':').map(Number);
+
+   const date = new Date();
+   date.setHours(h, m, 0, 0);
+   date.setHours(date.getHours() + hours);
+
+   return format(date, 'HH:mm');
+}
+
+export function addMinutesToTime(time: string, minutes: number): string {
+   const [h, m] = time.split(':').map(Number);
+
+   const date = new Date();
+   date.setHours(h, m, 0, 0);
+   date.setMinutes(date.getMinutes() + minutes);
+
+   return format(date, 'HH:mm');
 }

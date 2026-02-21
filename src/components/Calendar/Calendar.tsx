@@ -9,6 +9,7 @@ import EventModal from '../Modal/EventModal';
 export default function Calendar() {
    const currentView = useCalendarStore((s) => s.currentView);
    const isModalOpen = useCalendarStore((s) => s.isModalOpen);
+   const closeModal = useCalendarStore((s) => s.closeModal);
 
    return (
       <div className="flex flex-col h-full">
@@ -22,7 +23,7 @@ export default function Calendar() {
             {currentView === 'month' && <MonthView />}
          </div>
 
-         {isModalOpen && <EventModal />}
+         <EventModal isOpen={isModalOpen} onClose={closeModal} />
       </div>
    );
 }
