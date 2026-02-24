@@ -8,6 +8,7 @@ export default function MonthView() {
    const currentDate = useCalendarStore((s) => s.currentDate);
    const events = useCalendarStore((s) => s.events);
    const openCreateModal = useCalendarStore((s) => s.openCreateModal);
+   const openEditModal = useCalendarStore((s) => s.openEditModal);
 
    const monthStart = startOfMonth(currentDate);
    const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
@@ -40,10 +41,11 @@ export default function MonthView() {
                const isCurrentMonth = isSameMonth(day, currentDate);
                const today = isToday(day);
 
-               const dayEvents = events.filter(
-                  (event) =>
-                     format(new Date(event.start), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd')
-               );
+               const dayKey = format(day, 'yyyy-MM-dd');
+
+               const dayEvents = events
+                  .filter((event) => format(new Date(event.start), 'yyyy-MM-dd') === dayKey)
+                  .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
                const visibleEvents = dayEvents.slice(0, 3);
                const hiddenCount = dayEvents.length - visibleEvents.length;
@@ -73,7 +75,12 @@ export default function MonthView() {
                         {visibleEvents.map((event) => (
                            <div
                               key={event.id}
-                              className="text-xs px-2 py-1 rounded truncate text-white shadow-sm"
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 openEditModal(event.id);
+                              }}
+                              title={event.title}
+                              className="text-xs px-2 py-1 rounded truncate text-white shadow-sm cursor-pointer hover:opacity-90 transition"
                               style={{ backgroundColor: event.color }}
                            >
                               {event.title}
@@ -81,7 +88,12 @@ export default function MonthView() {
                         ))}
 
                         {hiddenCount > 0 && (
-                           <div className="text-xs text-gray-500">+{hiddenCount} more</div>
+                           <div
+                              className="text-xs text-gray-500 cursor-pointer hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                           >
+                              +{hiddenCount} more
+                           </div>
                         )}
                      </div>
                   </div>

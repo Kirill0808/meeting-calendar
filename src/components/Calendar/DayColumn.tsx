@@ -22,7 +22,7 @@ export default function DayColumn({
 }: DayColumnProps) {
    const today = isToday(date);
 
-   const dayEvents = events.filter((event) => isSameDay(event.start, date));
+   const dayEvents = events.filter((event) => isSameDay(new Date(event.start), date));
 
    const layoutEvents = calculateEventLayout(dayEvents);
 

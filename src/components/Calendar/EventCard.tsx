@@ -21,7 +21,10 @@ export default function EventCard({
 }: EventCardProps) {
    return (
       <div
-         onClick={() => onClick?.(event)}
+         onClick={(e) => {
+            e.stopPropagation();
+            onClick?.(event);
+         }}
          style={{
             top,
             height,
@@ -33,11 +36,12 @@ export default function EventCard({
             'absolute rounded-lg px-2 py-1 text-xs text-white',
             'cursor-pointer overflow-hidden',
             'shadow-sm hover:shadow-md transition-all',
-            'hover:brightness-110'
+            'hover:brightness-110',
+            'pointer-events-auto'
          )}
       >
          <div className="font-medium truncate">{event.title}</div>
-         <div className="opacity-90">
+         <div className="opacity-90 text-[10px]">
             {formatTime(event.start)} – {formatTime(event.end)}
          </div>
       </div>

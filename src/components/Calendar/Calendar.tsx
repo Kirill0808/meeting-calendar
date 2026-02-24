@@ -4,7 +4,7 @@ import DayView from './DayView';
 import MonthView from './MonthView';
 import CalendarHeader from './CalendarHeader';
 import WeekDaysHeader from './WeekDaysHeader';
-import EventModal from '../Modal/EventModal';
+import EventModal from '../../features/event-form/EventModal';
 
 export default function Calendar() {
    const currentView = useCalendarStore((s) => s.currentView);

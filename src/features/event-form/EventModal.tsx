@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import Modal from '@/components/ui/Modal';
 import { useCalendarStore } from '@/store/calendar-store';
 import { formatTime, parseTime, addHoursToTime } from '@/utils/date';
 
@@ -24,7 +25,6 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
    const [color, setColor] = useState(COLORS[0]);
    const [startTime, setStartTime] = useState('09:00');
    const [endTime, setEndTime] = useState(() => addHoursToTime('09:00', 1));
-
    const [error, setError] = useState<string | null>(null);
 
    /* =========================
@@ -42,14 +42,14 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
          setStartTime(formatTime(editingEvent.start));
          setEndTime(formatTime(editingEvent.end));
       } else if (selectedSlot) {
+         const formattedStart = formatTime(selectedSlot);
+
          setTitle('');
          setColor(COLORS[0]);
-
-         const formattedStart = formatTime(selectedSlot);
          setStartTime(formattedStart);
          setEndTime(addHoursToTime(formattedStart, 1));
       }
-   }, [isOpen, editingEvent, selectedSlot, isEditMode]);
+   }, [isOpen, isEditMode, editingEvent, selectedSlot]);
 
    /* =========================
       Auto update endTime
@@ -123,95 +123,93 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
       }
    };
 
-   if (!isOpen) return null;
-
    return (
-      <div
-         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-         onClick={onClose}
-      >
-         <div
-            className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 animate-fadeIn"
-            onClick={(e) => e.stopPropagation()}
+      <Modal isOpen={isOpen} onClose={onClose}>
+         {/* Close button */}
+         <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
          >
-            <button
-               onClick={onClose}
-               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-               <X size={20} />
-            </button>
+            <X size={20} />
+         </button>
 
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-               {isEditMode ? 'Edit event' : 'Create event'}
-            </h2>
+         {/* Title */}
+         <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            {isEditMode ? 'Edit event' : 'Create event'}
+         </h2>
 
-            <TimePicker
-               startTime={startTime}
-               endTime={endTime}
-               onStartChange={(value) => {
-                  setStartTime(value);
+         {/* Time Picker */}
+         <TimePicker
+            startTime={startTime}
+            endTime={endTime}
+            onStartChange={(value) => {
+               setStartTime(value);
+               setError(null);
+            }}
+            onEndChange={(value) => {
+               setEndTime(value);
+               setError(null);
+            }}
+         />
+
+         {/* Title input */}
+         <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Event title</label>
+
+            <input
+               type="text"
+               value={title}
+               maxLength={100}
+               onChange={(e) => {
+                  setTitle(e.target.value);
                   setError(null);
                }}
-               onEndChange={(value) => {
-                  setEndTime(value);
+               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
+
+            {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+         </div>
+
+         {/* Color Picker */}
+         <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+
+            <ColorPicker
+               colors={COLORS}
+               selected={color}
+               onChange={(value) => {
+                  setColor(value);
                   setError(null);
                }}
             />
+         </div>
 
-            <div className="mb-4">
-               <label className="block text-sm font-medium text-gray-700 mb-1">Event title</label>
-               <input
-                  type="text"
-                  value={title}
-                  maxLength={100}
-                  onChange={(e) => {
-                     setTitle(e.target.value);
-                     setError(null);
-                  }}
-                  className="w-full px-3 py-2 border rounded-lg"
-               />
+         {/* Actions */}
+         <div className="flex justify-between items-center">
+            {isEditMode && (
+               <button onClick={handleDelete} className="text-red-500 text-sm hover:underline">
+                  Delete
+               </button>
+            )}
 
-               <p className="text-xs text-gray-400 mt-1 text-right">{title.length}/100</p>
+            <div className="ml-auto flex gap-3">
+               <button
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50 transition"
+               >
+                  Cancel
+               </button>
 
-               {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
-            </div>
-
-            <div className="mb-6">
-               <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
-               <ColorPicker
-                  colors={COLORS}
-                  selected={color}
-                  onChange={(value) => {
-                     setColor(value);
-                     setError(null);
-                  }}
-               />
-            </div>
-
-            <div className="flex justify-between items-center">
-               {isEditMode && (
-                  <button onClick={handleDelete} className="text-red-500 text-sm hover:underline">
-                     Delete
-                  </button>
-               )}
-
-               <div className="ml-auto flex gap-3">
-                  <button
-                     onClick={onClose}
-                     className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50"
-                  >
-                     Cancel
-                  </button>
-
-                  <button
-                     onClick={handleSubmit}
-                     className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-                  >
-                     {isEditMode ? 'Save changes' : 'Create event'}
-                  </button>
-               </div>
+               <button
+                  onClick={handleSubmit}
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+               >
+                  {isEditMode ? 'Save changes' : 'Create event'}
+               </button>
             </div>
          </div>
-      </div>
+      </Modal>
    );
 }
