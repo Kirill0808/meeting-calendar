@@ -12,7 +12,14 @@ export default function Calendar() {
    const closeModal = useCalendarStore((s) => s.closeModal);
 
    return (
-      <div className="flex flex-col h-full">
+      <div
+         className="
+                        flex flex-col h-full
+                        bg-white text-gray-900
+                        dark:bg-gray-900 dark:text-gray-100
+                        transition-colors duration-300
+                     "
+      >
          <CalendarHeader />
 
          {currentView === 'week' && <WeekDaysHeader />}

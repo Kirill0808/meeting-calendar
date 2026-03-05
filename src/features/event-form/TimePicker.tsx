@@ -12,18 +12,33 @@ export default function TimePicker({
    onEndChange,
 }: TimePickerProps) {
    return (
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-3 mb-4">
          <input
             type="time"
             value={startTime}
             onChange={(e) => onStartChange(e.target.value)}
-            className="border px-2 py-1 rounded-lg"
+            className="
+               px-3 py-2 rounded-lg
+               border border-gray-200 dark:border-gray-700
+               bg-white dark:bg-gray-800
+               text-gray-900 dark:text-gray-100
+               focus:outline-none focus:ring-2 focus:ring-blue-500
+               transition-colors
+            "
          />
+
          <input
             type="time"
             value={endTime}
             onChange={(e) => onEndChange(e.target.value)}
-            className="border px-2 py-1 rounded-lg"
+            className="
+               px-3 py-2 rounded-lg
+               border border-gray-200 dark:border-gray-700
+               bg-white dark:bg-gray-800
+               text-gray-900 dark:text-gray-100
+               focus:outline-none focus:ring-2 focus:ring-blue-500
+               transition-colors
+            "
          />
       </div>
    );
