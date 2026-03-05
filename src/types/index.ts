@@ -5,6 +5,8 @@ export type TimeSlot = {
    end: Date;
 };
 
+export type RepeatType = 'daily' | 'weekly';
+
 export type CalendarEvent = {
    id: string;
    title: string;
@@ -12,4 +14,6 @@ export type CalendarEvent = {
    start: Date;
    end: Date;
    color: string;
+   repeat?: RepeatType;
+   repeatUntil?: Date;
 };
