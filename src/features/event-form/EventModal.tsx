@@ -7,6 +7,7 @@ import { formatTime, parseTime, addHoursToTime } from '@/utils/date';
 
 import TimePicker from './TimePicker';
 import ColorPicker from './ColorPicker';
+import RepeatUntilPicker from './RepeatUntilPicker';
 
 const COLORS = ['#22c55e', '#3b82f6', '#ef4444', '#f59e0b', '#a855f7'];
 
@@ -27,7 +28,7 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
    const [endTime, setEndTime] = useState(() => addHoursToTime('09:00', 1));
 
    const [repeat, setRepeat] = useState<'none' | 'daily' | 'weekly'>('none');
-   const [repeatUntil, setRepeatUntil] = useState<string>('');
+   const [repeatUntil, setRepeatUntil] = useState<Date | undefined>();
 
    const [error, setError] = useState<string | null>(null);
    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -49,9 +50,9 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
          setRepeat(editingEvent.repeat ?? 'none');
 
          if (editingEvent.repeatUntil) {
-            setRepeatUntil(editingEvent.repeatUntil.toISOString().split('T')[0]);
+            setRepeatUntil(editingEvent.repeatUntil);
          } else {
-            setRepeatUntil('');
+            setRepeatUntil(undefined);
          }
       } else if (selectedSlot) {
          const formattedStart = formatTime(selectedSlot);
@@ -61,7 +62,7 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
          setStartTime(formattedStart);
          setEndTime(addHoursToTime(formattedStart, 1));
          setRepeat('none');
-         setRepeatUntil('');
+         setRepeatUntil(undefined);
       }
    }, [isOpen, editingEvent, selectedSlot]);
 
@@ -119,7 +120,7 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
             repeat === 'none'
                ? undefined
                : repeatUntil
-                 ? new Date(repeatUntil + 'T23:59:59')
+                 ? new Date(repeatUntil.setHours(23, 59, 59, 999))
                  : undefined,
       };
 
@@ -244,26 +245,12 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
 
                {repeat !== 'none' && (
                   <div className="mt-4">
-                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Repeat until
-                     </label>
-
-                     <input
-                        type="date"
+                     <RepeatUntilPicker
                         value={repeatUntil}
-                        onChange={(e) => {
-                           setRepeatUntil(e.target.value);
+                        onChange={(date) => {
+                           setRepeatUntil(date);
                            setError(null);
                         }}
-                        className="
-                                 w-full px-3 py-2 rounded-lg
-                                 border border-gray-200 dark:border-gray-700
-                                 bg-white dark:bg-gray-800
-                                 text-gray-900 dark:text-gray-100
-                                 placeholder-gray-400 dark:placeholder-gray-500
-                                 focus:outline-none focus:ring-2 focus:ring-blue-500
-                                 transition-colors
-                              "
                      />
 
                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
