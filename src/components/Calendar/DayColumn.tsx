@@ -6,7 +6,9 @@ import { isSameDay, isToday } from 'date-fns';
 import { useCalendarStore } from '@/store/calendar-store';
 import { getEventPosition, calculateEventLayout } from '@/utils/event';
 import EventCard from './EventCard';
+import CurrentTimeLine from './CurrentTimeLine';
 import clsx from 'clsx';
+import { START_HOUR, END_HOUR, HOUR_HEIGHT, STEP_MINUTES } from '@/constants/calendar';
 
 interface DayColumnProps {
    date: Date;
@@ -33,10 +35,6 @@ export default function DayColumn({
    const [previewHeight, setPreviewHeight] = useState<number>(0);
    const [isInvalidDrop, setIsInvalidDrop] = useState(false);
 
-   const HOUR_HEIGHT = 64;
-   const START_HOUR = 8;
-   const END_HOUR = 20;
-   const STEP = 15;
    const PIXELS_PER_MINUTE = HOUR_HEIGHT / 60;
 
    const dayEvents = events.filter((event) => isSameDay(new Date(event.start), date));
@@ -55,7 +53,8 @@ export default function DayColumn({
             const offsetY = e.clientY - rect.top;
 
             // 🔥 snap по 15 минутам
-            const snappedMinutes = Math.floor(offsetY / (PIXELS_PER_MINUTE * STEP)) * STEP;
+            const snappedMinutes =
+               Math.floor(offsetY / (PIXELS_PER_MINUTE * STEP_MINUTES)) * STEP_MINUTES;
 
             const snappedTop = snappedMinutes * PIXELS_PER_MINUTE;
 
@@ -93,7 +92,8 @@ export default function DayColumn({
             const rect = e.currentTarget.getBoundingClientRect();
             const offsetY = e.clientY - rect.top;
 
-            const snappedMinutes = Math.floor(offsetY / (PIXELS_PER_MINUTE * STEP)) * STEP;
+            const snappedMinutes =
+               Math.floor(offsetY / (PIXELS_PER_MINUTE * STEP_MINUTES)) * STEP_MINUTES;
 
             const newStart = new Date(date);
             newStart.setHours(START_HOUR, 0, 0, 0);
@@ -120,16 +120,18 @@ export default function DayColumn({
             {hours.map((hour) => (
                <div
                   key={hour}
+                  style={{ height: HOUR_HEIGHT }}
                   className="
-                           h-16
-                           border-b border-gray-200 dark:border-gray-700
-                           hover:bg-blue-100 dark:hover:bg-blue-900/30
-                           cursor-pointer
-                           transition-colors"
+                        border-t border-gray-200 dark:border-gray-700
+                        hover:bg-blue-100 dark:hover:bg-blue-900/30
+                        cursor-pointer
+                        transition-colors"
                   onClick={() => onSlotClick?.(date, hour)}
                />
             ))}
          </div>
+
+         {isToday(date) && <CurrentTimeLine />}
 
          {/* Events */}
          <div className="absolute inset-0 z-10 pointer-events-none">

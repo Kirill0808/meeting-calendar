@@ -1,6 +1,10 @@
+import { useRef, useEffect } from 'react';
 import { useCalendarStore } from '@/store/calendar-store';
 import DayColumn from './DayColumn';
 import TimeColumn from './TimeColumn';
+import { START_HOUR, END_HOUR } from '@/constants/calendar';
+import { scrollToCurrentTime } from '@/utils/scrollToCurrentTime';
+
 import { isSameDay, differenceInCalendarDays } from 'date-fns';
 import type { CalendarEvent } from '@/types';
 
@@ -10,13 +14,23 @@ export default function DayView() {
    const openCreateModal = useCalendarStore((s) => s.openCreateModal);
    const openEditModal = useCalendarStore((s) => s.openEditModal);
 
-   const hours = Array.from({ length: 13 }, (_, i) => i + 8);
+   const containerRef = useRef<HTMLDivElement | null>(null);
+
+   const hours = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR);
 
    const handleSlotClick = (date: Date, hour: number) => {
       const start = new Date(date);
       start.setHours(hour, 0, 0, 0);
       openCreateModal(start);
    };
+
+   /* =========================
+      Autoscroll to current time
+   ========================= */
+
+   useEffect(() => {
+      scrollToCurrentTime(containerRef.current);
+   }, []);
 
    /* =========================
       Build occurrence for day
@@ -49,6 +63,7 @@ export default function DayView() {
       if (!repeatUntilDate) return [];
 
       const diffUntil = differenceInCalendarDays(currentDate, repeatUntilDate);
+
       if (diffUntil > 0) return [];
 
       if (event.repeat === 'daily') {
@@ -73,22 +88,24 @@ export default function DayView() {
          transition-colors duration-300
       "
       >
-         <TimeColumn hours={hours} />
+         <div ref={containerRef} className="flex flex-1 overflow-y-auto items-start">
+            <TimeColumn hours={hours} />
 
-         <div
-            className="
-            flex-1
-            border-l border-gray-200 dark:border-gray-700
-            transition-colors
-         "
-         >
-            <DayColumn
-               date={currentDate}
-               hours={hours}
-               events={eventsForCurrentDay}
-               onSlotClick={handleSlotClick}
-               onEventClick={(event) => openEditModal(event.id)}
-            />
+            <div
+               className="
+               flex-1
+               border-l border-gray-200 dark:border-gray-700
+               transition-colors
+            "
+            >
+               <DayColumn
+                  date={currentDate}
+                  hours={hours}
+                  events={eventsForCurrentDay}
+                  onSlotClick={handleSlotClick}
+                  onEventClick={(event) => openEditModal(event.id)}
+               />
+            </div>
          </div>
       </div>
    );

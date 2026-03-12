@@ -5,6 +5,10 @@ import { Repeat } from 'lucide-react';
 import clsx from 'clsx';
 import { useRef } from 'react';
 
+import { START_HOUR, END_HOUR, HOUR_HEIGHT, STEP_MINUTES } from '@/constants/calendar';
+
+const PIXELS_PER_MINUTE = HOUR_HEIGHT / 60;
+
 interface EventCardProps {
    event: CalendarEvent;
    top: number;
@@ -28,12 +32,6 @@ export default function EventCard({
    const isResizing = useRef(false);
    const wasDragging = useRef(false);
 
-   const START_HOUR = 8;
-   const END_HOUR = 20;
-   const STEP = 15;
-   const HOUR_HEIGHT = 64;
-   const PIXELS_PER_MINUTE = HOUR_HEIGHT / 60;
-
    const startResize = (e: React.MouseEvent, direction: 'top' | 'bottom') => {
       e.stopPropagation();
       e.preventDefault();
@@ -44,9 +42,10 @@ export default function EventCard({
       const element = e.currentTarget.parentElement as HTMLElement;
       const startY = e.clientY;
 
-      const originalStartMinutes = event.start.getHours() * 60 + event.start.getMinutes();
+      const originalStartMinutes =
+         (event.start.getHours() - START_HOUR) * 60 + event.start.getMinutes();
 
-      const originalEndMinutes = event.end.getHours() * 60 + event.end.getMinutes();
+      const originalEndMinutes = (event.end.getHours() - START_HOUR) * 60 + event.end.getMinutes();
 
       let newStartMinutes = originalStartMinutes;
       let newEndMinutes = originalEndMinutes;
@@ -56,7 +55,8 @@ export default function EventCard({
       const onMouseMove = (moveEvent: MouseEvent) => {
          const deltaY = moveEvent.clientY - startY;
 
-         const deltaMinutes = Math.round(deltaY / (PIXELS_PER_MINUTE * STEP)) * STEP;
+         const deltaMinutes =
+            Math.round(deltaY / (PIXELS_PER_MINUTE * STEP_MINUTES)) * STEP_MINUTES;
 
          if (direction === 'bottom') {
             newEndMinutes = originalEndMinutes + deltaMinutes;
@@ -64,9 +64,11 @@ export default function EventCard({
             if (newEndMinutes <= originalStartMinutes) return;
             if (newEndMinutes > END_HOUR * 60) return;
 
+            const MIN_HEIGHT = 20;
+
             const newHeight = (newEndMinutes - originalStartMinutes) * PIXELS_PER_MINUTE;
 
-            element.style.height = `${newHeight}px`;
+            element.style.height = `${Math.max(MIN_HEIGHT, newHeight)}px`;
          }
 
          if (direction === 'top') {
@@ -76,12 +78,12 @@ export default function EventCard({
             if (newStartMinutes < START_HOUR * 60) return;
 
             const offsetMinutes = newStartMinutes - originalStartMinutes;
-
             const offsetPixels = offsetMinutes * PIXELS_PER_MINUTE;
 
-            element.style.transform = `translateY(${offsetPixels}px)`;
+            const MIN_HEIGHT = 20;
 
-            element.style.height = `${startHeight - offsetPixels}px`;
+            element.style.top = `${top + offsetPixels}px`;
+            element.style.height = `${Math.max(MIN_HEIGHT, startHeight - offsetPixels)}px`;
          }
       };
 
@@ -89,17 +91,17 @@ export default function EventCard({
          isResizing.current = false;
 
          const newStart = new Date(event.start);
-         newStart.setHours(0, 0, 0, 0);
+         newStart.setHours(START_HOUR, 0, 0, 0);
          newStart.setMinutes(newStartMinutes);
 
          const newEnd = new Date(event.start);
-         newEnd.setHours(0, 0, 0, 0);
+         newEnd.setHours(START_HOUR, 0, 0, 0);
          newEnd.setMinutes(newEndMinutes);
 
          updateEventTime(event.id, newStart, newEnd);
 
-         element.style.transform = '';
          element.style.height = '';
+         element.style.top = '';
 
          window.removeEventListener('mousemove', onMouseMove);
          window.removeEventListener('mouseup', onMouseUp);

@@ -1,6 +1,9 @@
+import { useRef, useEffect } from 'react';
 import { useCalendarStore } from '@/store/calendar-store';
 import DayColumn from './DayColumn';
 import TimeColumn from './TimeColumn';
+import { START_HOUR, END_HOUR } from '@/constants/calendar';
+import { scrollToCurrentTime } from '@/utils/scrollToCurrentTime';
 
 import {
    addDays,
@@ -20,10 +23,12 @@ export default function WeekView() {
    const openCreateModal = useCalendarStore((s) => s.openCreateModal);
    const openEditModal = useCalendarStore((s) => s.openEditModal);
 
+   const containerRef = useRef<HTMLDivElement | null>(null);
+
    const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
    const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-   const hours = Array.from({ length: 13 }, (_, i) => i + 8);
+   const hours = Array.from({ length: END_HOUR - START_HOUR }, (_, i) => i + START_HOUR);
 
    const handleSlotClick = (date: Date, hour: number) => {
       const start = new Date(date);
@@ -31,7 +36,12 @@ export default function WeekView() {
       openCreateModal(start);
    };
 
-   // 🔹 helper для генерации occurrence на конкретный день
+   // 🔹 автоскролл к текущему времени
+   useEffect(() => {
+      scrollToCurrentTime(containerRef.current);
+   }, []);
+
+   // 🔹 helper для генерации occurrence
    const buildOccurrence = (event: CalendarEvent, targetDate: Date): CalendarEvent => {
       const start = new Date(targetDate);
       start.setHours(event.start.getHours(), event.start.getMinutes(), 0, 0);
@@ -42,7 +52,7 @@ export default function WeekView() {
       return { ...event, start, end };
    };
 
-   // 🔹 функция получения событий для конкретного дня
+   // 🔹 события для конкретного дня
    const getEventsForDay = (day: Date): CalendarEvent[] => {
       return events.flatMap((event) => {
          const eventStart = new Date(event.start);
@@ -69,8 +79,6 @@ export default function WeekView() {
          }
 
          if (event.repeat === 'daily') {
-            if (diffFromStart < 0) return [];
-
             if (event.repeatUntil) {
                const diffUntil = differenceInCalendarDays(
                   startOfDay(day),
@@ -96,29 +104,31 @@ export default function WeekView() {
          transition-colors
       "
       >
-         <TimeColumn hours={hours} />
+         <div ref={containerRef} className="flex flex-1 overflow-y-auto items-start">
+            <TimeColumn hours={hours} />
 
-         <div
-            className="
-            grid grid-cols-7 flex-1
-            border-l border-gray-200 dark:border-gray-700
-            transition-colors
-         "
-         >
-            {days.map((day) => {
-               const eventsForDay = getEventsForDay(day);
+            <div
+               className="
+               grid grid-cols-7 flex-1
+               border-l border-gray-200 dark:border-gray-700
+               transition-colors
+            "
+            >
+               {days.map((day) => {
+                  const eventsForDay = getEventsForDay(day);
 
-               return (
-                  <DayColumn
-                     key={day.toISOString()}
-                     date={day}
-                     hours={hours}
-                     events={eventsForDay}
-                     onSlotClick={handleSlotClick}
-                     onEventClick={(event) => openEditModal(event.id)}
-                  />
-               );
-            })}
+                  return (
+                     <DayColumn
+                        key={day.toISOString()}
+                        date={day}
+                        hours={hours}
+                        events={eventsForDay}
+                        onSlotClick={handleSlotClick}
+                        onEventClick={(event) => openEditModal(event.id)}
+                     />
+                  );
+               })}
+            </div>
          </div>
       </div>
    );

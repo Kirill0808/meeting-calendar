@@ -24,7 +24,7 @@ export default function Calendar() {
 
          {currentView === 'week' && <WeekDaysHeader />}
 
-         <div className="flex-1">
+         <div className="flex-1 flex overflow-hidden">
             {currentView === 'week' && <WeekView />}
             {currentView === 'day' && <DayView />}
             {currentView === 'month' && <MonthView />}
