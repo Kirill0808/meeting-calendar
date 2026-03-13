@@ -108,6 +108,13 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
          return;
       }
 
+      const now = new Date();
+
+      if (start < now && !editingEvent) {
+         setError('Cannot create events in the past');
+         return;
+      }
+
       setError(null);
 
       const eventData = {

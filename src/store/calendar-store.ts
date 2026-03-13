@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { addDays, subDays, addWeeks, subWeeks, addMonths, subMonths, endOfDay } from 'date-fns';
+import { addDays, subDays, addWeeks, subWeeks, addMonths, subMonths } from 'date-fns';
 import type { CalendarEvent, CalendarView } from '@/types';
 
 type CalendarState = {
@@ -82,15 +82,50 @@ export const useCalendarStore = create<CalendarStore>()(
             }),
 
          addEvent: (data) =>
-            set((state) => ({
-               events: [
-                  ...state.events,
-                  {
+            set((state) => {
+               const newEvents: CalendarEvent[] = [];
+
+               const duration = data.end.getTime() - data.start.getTime();
+
+               const repeatUntil = data.repeatUntil ?? data.start;
+
+               let currentDate = new Date(data.start);
+
+               const seriesId = data.repeat
+                  ? `series_${Date.now()}_${Math.random().toString(36).slice(2)}`
+                  : undefined;
+
+               while (currentDate <= repeatUntil) {
+                  const start = new Date(currentDate);
+                  const end = new Date(start.getTime() + duration);
+
+                  newEvents.push({
                      ...data,
+
                      id: `event_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-                  },
-               ],
-            })),
+
+                     start,
+                     end,
+
+                     seriesId,
+
+                     repeat: undefined,
+                     repeatUntil: undefined,
+                  });
+
+                  if (data.repeat === 'daily') {
+                     currentDate = addDays(currentDate, 1);
+                  } else if (data.repeat === 'weekly') {
+                     currentDate = addWeeks(currentDate, 1);
+                  } else {
+                     break;
+                  }
+               }
+
+               return {
+                  events: [...state.events, ...newEvents],
+               };
+            }),
 
          updateEvent: (id, updates) =>
             set((state) => ({

@@ -178,10 +178,10 @@ export default function EventCard({
             onMouseDown={(e) => startResize(e, 'bottom')}
          />
 
-         {event.repeat && (
+         {event.seriesId && (
             <div
                className="absolute top-1 right-1 text-white/80"
-               title={event.repeat === 'daily' ? 'Repeats daily' : 'Repeats weekly'}
+               title="Part of recurring event series"
             >
                <Repeat size={12} />
             </div>

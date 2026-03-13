@@ -16,4 +16,5 @@ export type CalendarEvent = {
    color: string;
    repeat?: RepeatType;
    repeatUntil?: Date;
+   seriesId?: string;
 };
