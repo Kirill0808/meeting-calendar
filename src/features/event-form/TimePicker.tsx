@@ -55,7 +55,7 @@ function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) 
             });
          }
       }
-   }, [open]);
+   }, [open, value, h]);
 
    return (
       <div ref={containerRef} className="relative">

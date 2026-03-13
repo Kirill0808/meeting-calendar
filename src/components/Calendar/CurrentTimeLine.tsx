@@ -10,19 +10,20 @@ export default function CurrentTimeLine() {
       const minutesFromStart = now.getHours() * 60 + now.getMinutes() - START_HOUR * 60;
 
       if (minutesFromStart < 0) {
-         setTop(null);
-         return;
+         return null;
       }
 
       const position = (minutesFromStart / 60) * HOUR_HEIGHT;
 
-      setTop(position);
+      return position;
    };
 
    useEffect(() => {
-      updatePosition();
+      setTop(updatePosition());
 
-      const interval = setInterval(updatePosition, 60000);
+      const interval = setInterval(() => {
+         setTop(updatePosition());
+      }, 60000);
 
       return () => clearInterval(interval);
    }, []);

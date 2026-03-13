@@ -40,7 +40,7 @@ export default function MonthView() {
       openCreateModal(start);
    };
 
-   const buildOccurrence = (event: any, targetDate: Date) => {
+   const buildOccurrence = (event: CalendarEvent, targetDate: Date) => {
       const eventStart = new Date(event.start);
       const eventEnd = new Date(event.end);
 

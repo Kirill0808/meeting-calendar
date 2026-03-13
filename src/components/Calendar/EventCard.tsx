@@ -3,7 +3,7 @@ import { formatTime } from '@/utils/date';
 import { useCalendarStore } from '@/store/calendar-store';
 import { Repeat } from 'lucide-react';
 import clsx from 'clsx';
-import { useRef } from 'react';
+import { useState } from 'react';
 
 import { START_HOUR, END_HOUR, HOUR_HEIGHT, STEP_MINUTES } from '@/constants/calendar';
 
@@ -13,31 +13,22 @@ interface EventCardProps {
    event: CalendarEvent;
    top: number;
    height: number;
-   column: number;
-   totalColumns: number;
    onClick?: (event: CalendarEvent) => void;
 }
 
-export default function EventCard({
-   event,
-   top,
-   height,
-   column,
-   totalColumns,
-   onClick,
-}: EventCardProps) {
+export default function EventCard({ event, top, height, onClick }: EventCardProps) {
    const setActiveDragEvent = useCalendarStore((s) => s.setActiveDragEvent);
    const updateEventTime = useCalendarStore((s) => s.updateEventTime);
 
-   const isResizing = useRef(false);
-   const wasDragging = useRef(false);
+   const [isResizing, setIsResizing] = useState(false);
+   const [wasDragging, setWasDragging] = useState(false);
 
    const startResize = (e: React.MouseEvent, direction: 'top' | 'bottom') => {
       e.stopPropagation();
       e.preventDefault();
 
-      isResizing.current = true;
-      wasDragging.current = true;
+      setIsResizing(true);
+      setWasDragging(true);
 
       const element = e.currentTarget.parentElement as HTMLElement;
       const startY = e.clientY;
@@ -88,7 +79,7 @@ export default function EventCard({
       };
 
       const onMouseUp = () => {
-         isResizing.current = false;
+         setIsResizing(false);
 
          const newStart = new Date(event.start);
          newStart.setHours(START_HOUR, 0, 0, 0);
@@ -107,7 +98,7 @@ export default function EventCard({
          window.removeEventListener('mouseup', onMouseUp);
 
          setTimeout(() => {
-            wasDragging.current = false;
+            setWasDragging(false);
          }, 0);
       };
 
@@ -117,9 +108,9 @@ export default function EventCard({
 
    return (
       <div
-         draggable={!isResizing.current}
+         draggable={!isResizing}
          onDragStart={(e) => {
-            wasDragging.current = true;
+            setWasDragging(true);
 
             e.dataTransfer.setData('eventId', event.id);
             e.dataTransfer.effectAllowed = 'move';
@@ -129,13 +120,13 @@ export default function EventCard({
             setActiveDragEvent(null);
 
             setTimeout(() => {
-               wasDragging.current = false;
+               setWasDragging(false);
             }, 0);
          }}
          onClick={(e) => {
             e.stopPropagation();
 
-            if (wasDragging.current || isResizing.current) return;
+            if (wasDragging || isResizing) return;
 
             onClick?.(event);
          }}
@@ -143,8 +134,8 @@ export default function EventCard({
             top,
             height,
             backgroundColor: event.color || '#2563eb',
-            width: `calc(${100 / totalColumns}% - 4px)`,
-            left: `calc(${(column * 100) / totalColumns}% + 2px)`,
+            width: 'calc(100% - 4px)',
+            left: '2px',
          }}
          className={clsx(
             'absolute rounded-lg px-2 py-1 text-xs text-white',

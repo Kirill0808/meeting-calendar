@@ -170,14 +170,7 @@ export default function DayColumn({
                            width: `${100 / totalColumns}%`,
                         }}
                      >
-                        <EventCard
-                           event={event}
-                           top={0}
-                           height={height}
-                           column={column}
-                           totalColumns={totalColumns}
-                           onClick={onEventClick}
-                        />
+                        <EventCard event={event} top={0} height={height} onClick={onEventClick} />
                      </motion.div>
                   );
                })}
