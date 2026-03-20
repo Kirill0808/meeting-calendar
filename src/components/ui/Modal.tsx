@@ -38,13 +38,14 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             >
                <motion.div
                   className="
-                           relative w-full max-w-md p-6
-                           rounded-2xl
-                           bg-white dark:bg-gray-900
-                           text-gray-900 dark:text-gray-100
-                           border border-gray-200 dark:border-gray-700
-                           shadow-2xl dark:shadow-black/40
-                           transition-colors"
+                     relative w-full max-w-md p-6
+                     rounded-2xl
+                     bg-[var(--bg)]
+                     text-[var(--text)]
+                     border border-[var(--border)]
+                     shadow-2xl
+                     transition-colors
+                  "
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}

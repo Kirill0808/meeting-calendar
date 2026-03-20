@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Clock } from 'lucide-react';
+import { cn } from '@/utils/cn';
 
 interface TimePickerProps {
    startTime: string;
@@ -96,14 +97,12 @@ function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) 
                      <button
                         key={hour}
                         onClick={() => setHour(hour)}
-                        className={`
-                           px-3 py-1 rounded-md text-sm transition
-                           ${
-                              hour === h
-                                 ? 'bg-blue-500 text-white'
-                                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                           }
-                        `}
+                        className={cn(
+                           'px-3 py-1 rounded-md text-sm transition',
+                           hour === h
+                              ? 'bg-blue-500 text-white'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        )}
                      >
                         {hour}
                      </button>
@@ -118,14 +117,12 @@ function TimeSelect({ value, onChange }: { value: string; onChange: (v: string) 
                      <button
                         key={minute}
                         onClick={() => setMinute(minute)}
-                        className={`
-                           px-3 py-1 rounded-md text-sm transition
-                           ${
-                              minute === m
-                                 ? 'bg-blue-500 text-white'
-                                 : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                           }
-                        `}
+                        className={cn(
+                           'px-3 py-1 rounded-md text-sm transition',
+                           minute === m
+                              ? 'bg-blue-500 text-white'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        )}
                      >
                         {minute}
                      </button>

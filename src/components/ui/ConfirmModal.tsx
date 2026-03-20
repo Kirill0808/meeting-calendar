@@ -32,26 +32,26 @@ export default function ConfirmModal({
    return (
       <div
          className="
-                  fixed inset-0 z-[60] flex items-center justify-center
-                  bg-black/40 dark:bg-black/60
-                  backdrop-blur-sm"
+            fixed inset-0 z-[60] flex items-center justify-center
+            bg-black/40 backdrop-blur-sm
+         "
       >
          <div
             className="
-                  w-96 relative p-6 rounded-2xl
-                  bg-white dark:bg-gray-900
-                  text-gray-900 dark:text-gray-100
-                  border border-gray-200 dark:border-gray-700
-                  shadow-xl dark:shadow-black/40
-                  animate-in fade-in zoom-in-95
-                  transition-colors"
+               w-96 relative p-6 rounded-2xl
+               bg-[var(--bg)]
+               text-[var(--text)]
+               border border-[var(--border)]
+               shadow-xl
+               animate-in fade-in zoom-in-95
+            "
          >
             {/* Header */}
             <div className="flex items-center gap-3 mb-3">
                <div
                   className={clsx(
                      'p-2 rounded-full',
-                     isDanger ? 'bg-red-100 dark:bg-red-900/40' : 'bg-blue-100 dark:bg-blue-900/40'
+                     isDanger ? 'bg-[rgba(239,68,68,0.15)]' : 'bg-[rgba(59,130,246,0.15)]'
                   )}
                >
                   {icon ? (
@@ -63,11 +63,11 @@ export default function ConfirmModal({
                   )}
                </div>
 
-               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{title}</h3>
+               <h3 className="text-lg font-semibold">{title}</h3>
             </div>
 
             {description && (
-               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{description}</p>
+               <p className="text-sm text-[var(--text-secondary)] mb-6">{description}</p>
             )}
 
             {/* Actions */}
@@ -75,10 +75,11 @@ export default function ConfirmModal({
                <button
                   onClick={onCancel}
                   className="
-                              px-4 py-2 rounded-lg border
-                              border-gray-200 dark:border-gray-700
-                              hover:bg-gray-100 dark:hover:bg-gray-800
-                              transition"
+                     px-4 py-2 rounded-lg border
+                     border-[var(--border)]
+                     hover:bg-[var(--bg-secondary)]
+                     transition
+                  "
                >
                   {cancelText}
                </button>

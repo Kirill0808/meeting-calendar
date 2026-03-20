@@ -82,21 +82,21 @@ export default function DayView() {
    return (
       <div
          className="
-         flex flex-1 overflow-hidden
-         bg-white dark:bg-gray-900
-         text-gray-900 dark:text-gray-100
-         transition-colors duration-300
-      "
+                  flex flex-1 overflow-hidden
+                  bg-[var(--bg)]
+                  text-[var(--text)]
+                  transition-colors duration-300
+               "
       >
          <div ref={containerRef} className="flex flex-1 overflow-y-auto items-start">
             <TimeColumn hours={hours} />
 
             <div
                className="
-               flex-1
-               border-l border-gray-200 dark:border-gray-700
-               transition-colors
-            "
+                     flex-1
+                     border-l border-[var(--border)]
+                     transition-colors
+                  "
             >
                <DayColumn
                   date={currentDate}

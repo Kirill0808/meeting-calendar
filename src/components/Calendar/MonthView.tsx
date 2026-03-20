@@ -72,7 +72,6 @@ export default function MonthView() {
                startOfDay(day),
                startOfDay(new Date(event.repeatUntil))
             );
-
             if (diffUntil > 0) return [];
          }
 
@@ -82,7 +81,6 @@ export default function MonthView() {
 
          if (event.repeat === 'weekly') {
             const diff = differenceInCalendarDays(startOfDay(day), startOfDay(eventStart));
-
             if (diff % 7 === 0) {
                return [buildOccurrence(event, day)];
             }
@@ -93,13 +91,20 @@ export default function MonthView() {
    };
 
    return (
-      <div className="flex flex-1 flex-col h-full min-h-0 bg-white dark:bg-gray-900">
+      <div
+         className="flex flex-1 flex-col h-full min-h-0"
+         style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}
+      >
          {/* Week days */}
-         <div className="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
+         <div className="grid grid-cols-7 border-b" style={{ borderColor: 'var(--border)' }}>
             {weekDays.map((day) => (
                <div
                   key={day}
-                  className="text-xs font-medium text-gray-500 dark:text-gray-400 text-center py-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0"
+                  className="text-xs font-medium text-center py-2 border-r last:border-r-0"
+                  style={{
+                     borderColor: 'var(--border)',
+                     color: 'var(--text-secondary)',
+                  }}
                >
                   {day}
                </div>
@@ -124,9 +129,10 @@ export default function MonthView() {
                      key={day.toISOString()}
                      onClick={() => handleDayClick(day)}
                      className={clsx(
-                        'border border-gray-200 dark:border-gray-700 p-2 cursor-pointer flex flex-col overflow-hidden hover:bg-gray-50 dark:hover:bg-gray-800/60',
-                        !isCurrentMonth && 'bg-gray-50 dark:bg-gray-800/40 text-gray-400'
+                        'border p-2 cursor-pointer flex flex-col overflow-hidden transition',
+                        !isCurrentMonth && 'opacity-50'
                      )}
+                     style={{ borderColor: 'var(--border)' }}
                   >
                      {/* Day number */}
                      <div
@@ -149,10 +155,10 @@ export default function MonthView() {
                               }}
                               title={event.title}
                               className="
-                                       text-xs px-2 py-1 rounded
-                                       text-white shadow-sm cursor-pointer
-                                       truncate flex min-w-0
-                                    "
+                                 text-xs px-2 py-1 rounded
+                                 text-white shadow-sm cursor-pointer
+                                 truncate flex min-w-0
+                              "
                               style={{ backgroundColor: event.color }}
                            >
                               {format(new Date(event.start), 'HH:mm')} {event.title}
@@ -161,7 +167,8 @@ export default function MonthView() {
 
                         {hiddenCount > 0 && (
                            <div
-                              className="text-xs text-gray-500 dark:text-gray-400 hover:underline"
+                              className="text-xs hover:underline"
+                              style={{ color: 'var(--text-secondary)' }}
                               onClick={(e) => {
                                  e.stopPropagation();
                                  setPopoverDay(day);
@@ -182,7 +189,10 @@ export default function MonthView() {
             <div className="fixed inset-0 z-50 flex items-center justify-center">
                <div className="absolute inset-0 bg-black/20" onClick={() => setPopoverDay(null)} />
 
-               <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 w-72">
+               <div
+                  className="relative rounded-lg shadow-lg p-4 w-72"
+                  style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}
+               >
                   <div className="font-semibold mb-3">{format(popoverDay, 'd MMM')}</div>
 
                   <div className="flex flex-col gap-2">

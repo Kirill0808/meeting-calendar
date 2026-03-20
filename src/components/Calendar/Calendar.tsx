@@ -5,6 +5,7 @@ import MonthView from './MonthView';
 import CalendarHeader from './CalendarHeader';
 import WeekDaysHeader from './WeekDaysHeader';
 import EventModal from '../../features/event-form/EventModal';
+import CalendarLayout from './CalendarLayout';
 
 export default function Calendar() {
    const currentView = useCalendarStore((s) => s.currentView);
@@ -12,25 +13,18 @@ export default function Calendar() {
    const closeModal = useCalendarStore((s) => s.closeModal);
 
    return (
-      <div
-         className="
-                        flex flex-col h-full
-                        bg-white text-gray-900
-                        dark:bg-gray-900 dark:text-gray-100
-                        transition-colors duration-300
-                     "
-      >
+      <CalendarLayout>
          <CalendarHeader />
 
          {currentView === 'week' && <WeekDaysHeader />}
 
-         <div className="flex-1 flex overflow-hidden">
+         <div className="flex-1 flex overflow-y-auto">
             {currentView === 'week' && <WeekView />}
             {currentView === 'day' && <DayView />}
             {currentView === 'month' && <MonthView />}
          </div>
 
          <EventModal isOpen={isModalOpen} onClose={closeModal} />
-      </div>
+      </CalendarLayout>
    );
 }

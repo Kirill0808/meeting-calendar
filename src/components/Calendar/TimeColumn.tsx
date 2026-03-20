@@ -6,15 +6,15 @@ interface TimeColumnProps {
 
 export default function TimeColumn({ hours }: TimeColumnProps) {
    return (
-      <div className="w-14 shrink-0 border-r border-gray-200 dark:border-gray-700">
+      <div className="w-14 shrink-0 border-r" style={{ borderColor: 'var(--border)' }}>
          {hours.map((hour) => (
             <div
                key={hour}
-               style={{ height: HOUR_HEIGHT }}
-               className="
-                           flex items-center justify-end pr-2
-                           text-xs text-gray-500 dark:text-gray-400
-                        "
+               style={{
+                  height: HOUR_HEIGHT,
+                  color: 'var(--text-secondary)',
+               }}
+               className="flex items-center justify-end pr-2 text-xs"
             >
                {hour}:00
             </div>

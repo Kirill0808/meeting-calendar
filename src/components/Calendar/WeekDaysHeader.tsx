@@ -12,8 +12,9 @@ export default function WeekDaysHeader() {
       <div
          className="
          grid grid-cols-[56px_repeat(7,1fr)]
-         border-b border-gray-200 dark:border-gray-700
-         bg-white dark:bg-gray-900
+         border-b
+         bg-[var(--bg)]
+         border-[var(--border)]
          transition-colors
       "
       >
@@ -27,12 +28,8 @@ export default function WeekDaysHeader() {
                <div
                   key={day.toISOString()}
                   className={clsx(
-                     `
-                  py-3 text-center text-xs uppercase tracking-wide transition
-                  `,
-                     isToday
-                        ? 'text-blue-600 dark:text-blue-400 font-semibold'
-                        : 'text-gray-500 dark:text-gray-400'
+                     'py-3 text-center text-xs uppercase tracking-wide transition',
+                     isToday ? 'text-blue-500 font-semibold' : 'text-[var(--text-secondary)]'
                   )}
                >
                   <div>{format(day, 'EEE')}</div>
@@ -40,7 +37,7 @@ export default function WeekDaysHeader() {
                   <div
                      className="
                      text-sm
-                     text-gray-800 dark:text-gray-200
+                     text-[var(--text)]
                   "
                   >
                      {format(day, 'd')}

@@ -99,8 +99,8 @@ export default function WeekView() {
       <div
          className="
          flex flex-1 overflow-hidden
-         bg-white dark:bg-gray-900
-         text-gray-900 dark:text-gray-100
+         bg-[var(--bg)]
+         text-[var(--text)]
          transition-colors
       "
       >
@@ -110,8 +110,8 @@ export default function WeekView() {
             <div
                className="
                grid grid-cols-7 flex-1
-               border-l border-gray-200 dark:border-gray-700
-               transition-colors
+               border-l
+               border-[var(--border)]
             "
             >
                {days.map((day) => {

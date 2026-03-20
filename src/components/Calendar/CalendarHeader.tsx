@@ -1,6 +1,6 @@
 import { useCalendarStore } from '@/store/calendar-store';
 import { formatPeriodLabel } from '@/utils/date';
-import clsx from 'clsx';
+import { cn } from '@/utils/cn';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 
 const views = ['day', 'week', 'month'] as const;
@@ -12,9 +12,8 @@ export default function CalendarHeader() {
       <header
          className="
             flex items-center justify-between px-4 py-3
-            border-b
-            border-gray-200 dark:border-gray-700
-            bg-white dark:bg-gray-900
+            border-b border-[var(--border)]
+            bg-[var(--bg)]
             transition-colors duration-300
          "
       >
@@ -23,7 +22,7 @@ export default function CalendarHeader() {
             <button
                className="
                   px-2 py-1 rounded
-                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  hover:bg-[var(--bg-hover)]
                   transition
                "
                onClick={goPrev}
@@ -34,8 +33,8 @@ export default function CalendarHeader() {
             <button
                className="
                   px-3 py-1 rounded
-                  bg-gray-100 dark:bg-gray-800
-                  hover:bg-gray-200 dark:hover:bg-gray-700
+                  bg-[var(--bg-secondary)]
+                  hover:bg-[var(--bg-hover)]
                   transition
                "
                onClick={goToday}
@@ -46,7 +45,7 @@ export default function CalendarHeader() {
             <button
                className="
                   px-2 py-1 rounded
-                  hover:bg-gray-100 dark:hover:bg-gray-800
+                  hover:bg-[var(--bg-hover)]
                   transition
                "
                onClick={goNext}
@@ -56,7 +55,7 @@ export default function CalendarHeader() {
          </div>
 
          {/* label */}
-         <div className="text-sm font-medium text-gray-900 dark:text-gray-100 transition-colors">
+         <div className="text-sm font-medium text-[var(--text)]">
             {formatPeriodLabel(currentView, currentDate)}
          </div>
 
@@ -66,27 +65,19 @@ export default function CalendarHeader() {
             <div
                className="
                   flex gap-1
-                  bg-gray-100 dark:bg-gray-800
+                  bg-[var(--bg-secondary)]
                   rounded-lg p-1
-                  transition-colors
                "
             >
                {views.map((v) => (
                   <button
                      key={v}
                      onClick={() => setCurrentView(v)}
-                     className={clsx(
+                     className={cn(
                         'px-3 py-1 text-sm rounded-md transition',
                         currentView === v
-                           ? `
-                              bg-white dark:bg-gray-700
-                              shadow
-                              text-gray-900 dark:text-white
-                           `
-                           : `
-                              text-gray-600 dark:text-gray-300
-                              hover:bg-gray-200 dark:hover:bg-gray-700
-                           `
+                           ? 'bg-[var(--bg)] shadow text-[var(--text)]'
+                           : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
                      )}
                   >
                      {v}
@@ -94,7 +85,6 @@ export default function CalendarHeader() {
                ))}
             </div>
 
-            {/* theme toggle */}
             <ThemeToggle />
          </div>
       </header>

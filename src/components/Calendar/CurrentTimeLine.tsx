@@ -33,8 +33,8 @@ export default function CurrentTimeLine() {
    return (
       <div className="absolute left-0 right-0 z-30 pointer-events-none" style={{ top }}>
          <div className="relative flex items-center">
-            <div className="w-2 h-2 bg-red-500 rounded-full -ml-1" />
-            <div className="flex-1 border-t-2 border-red-500" />
+            <div className="w-2 h-2 bg-[var(--accent)] rounded-full -ml-1" />
+            <div className="flex-1 border-t-2 border-[var(--accent)]" />
          </div>
       </div>
    );

@@ -111,8 +111,8 @@ export default function DayColumn({
          }}
          className={clsx(
             'relative border-l transition-colors',
-            'border-gray-200 dark:border-gray-700',
-            today && 'bg-blue-50 dark:bg-blue-900/20'
+            'border-[var(--border)]',
+            today && 'bg-[var(--today)]'
          )}
       >
          {/* Time slots */}
@@ -122,10 +122,11 @@ export default function DayColumn({
                   key={hour}
                   style={{ height: HOUR_HEIGHT }}
                   className="
-                        border-t border-gray-200 dark:border-gray-700
-                        hover:bg-blue-100 dark:hover:bg-blue-900/30
-                        cursor-pointer
-                        transition-colors"
+                           border-t border-[var(--border)]
+                           hover:bg-[var(--hover)]
+                           cursor-pointer
+                           transition-colors
+                        "
                   onClick={() => onSlotClick?.(date, hour)}
                />
             ))}
@@ -182,17 +183,15 @@ export default function DayColumn({
             <div
                className={clsx(
                   `
-                           absolute left-1 right-1
-                           rounded-lg
-                           text-white text-xs p-2
-                           pointer-events-none
-                           shadow-lg backdrop-blur-sm
-                           z-20
-                           transition-colors
-                           `,
-                  isInvalidDrop
-                     ? 'bg-red-500/60 dark:bg-red-500/40'
-                     : 'bg-blue-500/50 dark:bg-blue-400/30'
+                        absolute left-1 right-1
+                        rounded-lg
+                        text-white text-xs p-2
+                        pointer-events-none
+                        shadow-lg backdrop-blur-sm
+                        z-20
+                        transition-colors
+                        `,
+                  isInvalidDrop ? 'bg-[var(--danger-soft)]' : 'bg-[var(--primary-soft)]'
                )}
                style={{
                   top: previewTop,

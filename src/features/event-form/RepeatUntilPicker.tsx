@@ -29,21 +29,20 @@ export default function RepeatUntilPicker({ value, onChange }: RepeatUntilPicker
 
    return (
       <div ref={containerRef} className="relative mb-4">
-         <label className="text-sm text-gray-600 dark:text-gray-300">Repeat until</label>
+         {/* LABEL */}
+         <label className="text-sm text-[var(--text-secondary)]">Repeat until</label>
 
+         {/* BUTTON */}
          <button
             type="button"
             onClick={() => setOpen(!open)}
             className="
-               mt-1
-               w-full
-               flex items-center justify-between
-               px-3 py-2
-               rounded-lg
-               border border-gray-200 dark:border-gray-700
-               bg-white dark:bg-gray-800
-               text-gray-900 dark:text-gray-100
-               hover:bg-gray-50 dark:hover:bg-gray-700
+               mt-1 w-full flex items-center justify-between
+               px-3 py-2 rounded-lg
+               border border-[var(--border)]
+               bg-[var(--bg)]
+               text-[var(--text)]
+               hover:bg-[var(--bg-secondary)]
                transition
             "
          >
@@ -51,16 +50,15 @@ export default function RepeatUntilPicker({ value, onChange }: RepeatUntilPicker
             <Calendar size={16} />
          </button>
 
+         {/* CALENDAR */}
          {open && (
             <div
                className="
                   absolute bottom-full mb-2
-                  z-50
-                  p-3
-                  rounded-xl
+                  z-50 p-3 rounded-xl
                   shadow-xl
-                  border border-gray-200 dark:border-gray-700
-                  bg-white dark:bg-gray-800
+                  border border-[var(--border)]
+                  bg-[var(--bg)]
                   origin-bottom animate-in fade-in zoom-in-95
                "
             >

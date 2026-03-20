@@ -55,11 +55,9 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
             if (newEndMinutes <= originalStartMinutes) return;
             if (newEndMinutes > END_HOUR * 60) return;
 
-            const MIN_HEIGHT = 20;
-
             const newHeight = (newEndMinutes - originalStartMinutes) * PIXELS_PER_MINUTE;
 
-            element.style.height = `${Math.max(MIN_HEIGHT, newHeight)}px`;
+            element.style.height = `${Math.max(20, newHeight)}px`;
          }
 
          if (direction === 'top') {
@@ -71,10 +69,8 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
             const offsetMinutes = newStartMinutes - originalStartMinutes;
             const offsetPixels = offsetMinutes * PIXELS_PER_MINUTE;
 
-            const MIN_HEIGHT = 20;
-
             element.style.top = `${top + offsetPixels}px`;
-            element.style.height = `${Math.max(MIN_HEIGHT, startHeight - offsetPixels)}px`;
+            element.style.height = `${Math.max(20, startHeight - offsetPixels)}px`;
          }
       };
 
@@ -97,9 +93,7 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
          window.removeEventListener('mousemove', onMouseMove);
          window.removeEventListener('mouseup', onMouseUp);
 
-         setTimeout(() => {
-            setWasDragging(false);
-         }, 0);
+         setTimeout(() => setWasDragging(false), 0);
       };
 
       window.addEventListener('mousemove', onMouseMove);
@@ -111,61 +105,51 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
          draggable={!isResizing}
          onDragStart={(e) => {
             setWasDragging(true);
-
             e.dataTransfer.setData('eventId', event.id);
-            e.dataTransfer.effectAllowed = 'move';
             setActiveDragEvent(event);
          }}
          onDragEnd={() => {
             setActiveDragEvent(null);
-
-            setTimeout(() => {
-               setWasDragging(false);
-            }, 0);
+            setTimeout(() => setWasDragging(false), 0);
          }}
          onClick={(e) => {
             e.stopPropagation();
-
             if (wasDragging || isResizing) return;
-
             onClick?.(event);
          }}
          style={{
             top,
             height,
-            backgroundColor: event.color || '#2563eb',
+            backgroundColor: event.color || 'var(--accent)',
             width: 'calc(100% - 4px)',
             left: '2px',
          }}
          className={clsx(
-            'absolute rounded-lg px-2 py-1 text-xs text-white',
+            'group absolute rounded-lg px-2 py-1 text-xs',
             'cursor-pointer overflow-hidden',
             'shadow-sm hover:shadow-md transition-all',
-            'hover:brightness-110',
             'pointer-events-auto'
          )}
       >
          {/* TOP RESIZE */}
          <div
             className="
-                        absolute top-0 left-0 right-0 h-2
-                        cursor-ns-resize
-                        opacity-0 hover:opacity-100
-                        transition
-                        bg-white/40 dark:bg-black/40
-                        rounded-t-lg"
+               absolute top-0 left-0 right-0 h-2
+               cursor-ns-resize opacity-0 hover:opacity-100
+               transition rounded-t-lg
+            "
+            style={{ background: 'rgba(255,255,255,0.3)' }}
             onMouseDown={(e) => startResize(e, 'top')}
          />
 
          {/* BOTTOM RESIZE */}
          <div
             className="
-                        absolute bottom-0 left-0 right-0 h-2
-                        cursor-ns-resize
-                        opacity-0 hover:opacity-100
-                        transition
-                        bg-white/40 dark:bg-black/40
-                        rounded-b-lg"
+               absolute bottom-0 left-0 right-0 h-2
+               cursor-ns-resize opacity-0 hover:opacity-100
+               transition rounded-b-lg
+            "
+            style={{ background: 'rgba(255,255,255,0.3)' }}
             onMouseDown={(e) => startResize(e, 'bottom')}
          />
 
@@ -178,11 +162,21 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
             </div>
          )}
 
-         <div className="font-medium truncate pr-4">{event.title}</div>
+         <div className="font-medium truncate pr-4 text-white">{event.title}</div>
 
-         <div className="opacity-90 text-[10px]">
+         <div className="text-[10px] text-white/80">
             {formatTime(event.start)} – {formatTime(event.end)}
          </div>
+         <div
+            className="
+                  absolute inset-0
+                  rounded-lg
+                  bg-white/0
+                  group-hover:bg-white/10
+                  transition
+                  pointer-events-none
+               "
+         />
       </div>
    );
 }
