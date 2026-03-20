@@ -23,6 +23,10 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
    const [isResizing, setIsResizing] = useState(false);
    const [wasDragging, setWasDragging] = useState(false);
 
+   // 🔥 preview state
+   const [previewStart, setPreviewStart] = useState<Date | null>(null);
+   const [previewEnd, setPreviewEnd] = useState<Date | null>(null);
+
    const startResize = (e: React.MouseEvent, direction: 'top' | 'bottom') => {
       e.stopPropagation();
       e.preventDefault();
@@ -49,6 +53,7 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
          const deltaMinutes =
             Math.round(deltaY / (PIXELS_PER_MINUTE * STEP_MINUTES)) * STEP_MINUTES;
 
+         // 🔽 RESIZE BOTTOM
          if (direction === 'bottom') {
             newEndMinutes = originalEndMinutes + deltaMinutes;
 
@@ -58,8 +63,16 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
             const newHeight = (newEndMinutes - originalStartMinutes) * PIXELS_PER_MINUTE;
 
             element.style.height = `${Math.max(20, newHeight)}px`;
+
+            const newEnd = new Date(event.start);
+            newEnd.setHours(START_HOUR, 0, 0, 0);
+            newEnd.setMinutes(newEndMinutes);
+
+            setPreviewStart(event.start);
+            setPreviewEnd(newEnd);
          }
 
+         // 🔼 RESIZE TOP
          if (direction === 'top') {
             newStartMinutes = originalStartMinutes + deltaMinutes;
 
@@ -71,6 +84,13 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
 
             element.style.top = `${top + offsetPixels}px`;
             element.style.height = `${Math.max(20, startHeight - offsetPixels)}px`;
+
+            const newStart = new Date(event.start);
+            newStart.setHours(START_HOUR, 0, 0, 0);
+            newStart.setMinutes(newStartMinutes);
+
+            setPreviewStart(newStart);
+            setPreviewEnd(event.end);
          }
       };
 
@@ -89,6 +109,9 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
 
          element.style.height = '';
          element.style.top = '';
+
+         setPreviewStart(null);
+         setPreviewEnd(null);
 
          window.removeEventListener('mousemove', onMouseMove);
          window.removeEventListener('mouseup', onMouseUp);
@@ -128,36 +151,26 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
             'group absolute rounded-lg px-2 py-1 text-xs',
             'cursor-pointer overflow-hidden',
             'shadow-sm hover:shadow-md transition-all',
+            isResizing && 'ring-2 ring-blue-400',
             'pointer-events-auto'
          )}
       >
          {/* TOP RESIZE */}
          <div
-            className="
-               absolute top-0 left-0 right-0 h-2
-               cursor-ns-resize opacity-0 hover:opacity-100
-               transition rounded-t-lg
-            "
+            className="absolute top-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 hover:opacity-100 transition rounded-t-lg"
             style={{ background: 'rgba(255,255,255,0.3)' }}
             onMouseDown={(e) => startResize(e, 'top')}
          />
 
          {/* BOTTOM RESIZE */}
          <div
-            className="
-               absolute bottom-0 left-0 right-0 h-2
-               cursor-ns-resize opacity-0 hover:opacity-100
-               transition rounded-b-lg
-            "
+            className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 hover:opacity-100 transition rounded-b-lg"
             style={{ background: 'rgba(255,255,255,0.3)' }}
             onMouseDown={(e) => startResize(e, 'bottom')}
          />
 
          {event.seriesId && (
-            <div
-               className="absolute top-1 right-1 text-white/80"
-               title="Part of recurring event series"
-            >
+            <div className="absolute top-1 right-1 text-white/80">
                <Repeat size={12} />
             </div>
          )}
@@ -165,18 +178,10 @@ export default function EventCard({ event, top, height, onClick }: EventCardProp
          <div className="font-medium truncate pr-4 text-white">{event.title}</div>
 
          <div className="text-[10px] text-white/80">
-            {formatTime(event.start)} – {formatTime(event.end)}
+            {formatTime(previewStart || event.start)} – {formatTime(previewEnd || event.end)}
          </div>
-         <div
-            className="
-                  absolute inset-0
-                  rounded-lg
-                  bg-white/0
-                  group-hover:bg-white/10
-                  transition
-                  pointer-events-none
-               "
-         />
+
+         <div className="absolute inset-0 rounded-lg bg-white/0 group-hover:bg-white/10 transition pointer-events-none" />
       </div>
    );
 }
