@@ -98,13 +98,13 @@ export default function WeekView() {
    return (
       <div
          className="
-         flex flex-1 overflow-hidden
+         flex flex-1 min-h-0 overflow-hidden
          bg-[var(--bg)]
          text-[var(--text)]
          transition-colors
       "
       >
-         <div ref={containerRef} className="flex flex-1 overflow-y-auto items-start">
+         <div ref={containerRef} className="flex flex-1 min-h-0 overflow-y-auto">
             <TimeColumn hours={hours} />
 
             <div

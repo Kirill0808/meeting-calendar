@@ -20,11 +20,20 @@ dd {
    margin: 0;
 }
 
+/* Full-height chain for scroll to work */
+html {
+   height: 100%;
+}
+
 /* Improve text rendering */
 body {
-   min-height: 100vh;
+   height: 100%;
    line-height: 1.5;
    text-rendering: optimizeSpeed;
+}
+
+#root {
+   height: 100%;
 }
 
 /* Lists */

@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { START_HOUR, HOUR_HEIGHT } from '@/constants/calendar';
 
+const updatePosition = () => {
+   const now = new Date();
+
+   const minutesFromStart = now.getHours() * 60 + now.getMinutes() - START_HOUR * 60;
+
+   if (minutesFromStart < 0) {
+      return null;
+   }
+
+   const position = (minutesFromStart / 60) * HOUR_HEIGHT;
+
+   return position;
+};
+
 export default function CurrentTimeLine() {
    const [top, setTop] = useState<number | null>(null);
-
-   const updatePosition = () => {
-      const now = new Date();
-
-      const minutesFromStart = now.getHours() * 60 + now.getMinutes() - START_HOUR * 60;
-
-      if (minutesFromStart < 0) {
-         return null;
-      }
-
-      const position = (minutesFromStart / 60) * HOUR_HEIGHT;
-
-      return position;
-   };
 
    useEffect(() => {
       setTop(updatePosition());

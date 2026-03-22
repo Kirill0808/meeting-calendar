@@ -43,6 +43,7 @@ export default function DayColumn({
 
    return (
       <div
+         style={{ height: (END_HOUR - START_HOUR) * HOUR_HEIGHT }}
          onDragOver={(e) => {
             e.preventDefault();
             if (!activeDragEvent) return;
@@ -116,7 +117,10 @@ export default function DayColumn({
          )}
       >
          {/* Time slots */}
-         <div className="relative z-0 flex flex-col">
+         <div
+            className="relative z-0 flex flex-col"
+            style={{ height: (END_HOUR - START_HOUR) * HOUR_HEIGHT }}
+         >
             {hours.map((hour) => (
                <div
                   key={hour}
