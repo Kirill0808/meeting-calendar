@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ModalProps {
    isOpen: boolean;
@@ -24,19 +25,41 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       };
    }, [isOpen, onClose]);
 
-   if (!isOpen) return null;
-
    return (
-      <div
-         className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-         onClick={onClose}
-      >
-         <div
-            className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 animate-fadeIn"
-            onClick={(e) => e.stopPropagation()}
-         >
-            {children}
-         </div>
-      </div>
+      <AnimatePresence>
+         {isOpen && (
+            <motion.div
+               className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               transition={{ duration: 0.2 }}
+               onClick={onClose}
+            >
+               <motion.div
+                  className="
+                     relative w-full max-w-md p-6
+                     rounded-2xl
+                     bg-[var(--bg)]
+                     text-[var(--text)]
+                     border border-[var(--border)]
+                     shadow-2xl
+                     transition-colors
+                  "
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{
+                     type: 'spring',
+                     stiffness: 260,
+                     damping: 20,
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+               >
+                  {children}
+               </motion.div>
+            </motion.div>
+         )}
+      </AnimatePresence>
    );
 }

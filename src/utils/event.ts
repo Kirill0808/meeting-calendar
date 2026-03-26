@@ -1,16 +1,14 @@
 import type { CalendarEvent } from '@/types';
-
-const DAY_START_HOUR = 8;
-const SLOT_HEIGHT = 64;
+import { START_HOUR, HOUR_HEIGHT } from '@/constants/calendar';
 
 export function getEventPosition(event: CalendarEvent) {
    const startMinutes = event.start.getHours() * 60 + event.start.getMinutes();
 
    const endMinutes = event.end.getHours() * 60 + event.end.getMinutes();
 
-   const top = ((startMinutes - DAY_START_HOUR * 60) / 60) * SLOT_HEIGHT;
+   const top = ((startMinutes - START_HOUR * 60) / 60) * HOUR_HEIGHT;
 
-   const height = ((endMinutes - startMinutes) / 60) * SLOT_HEIGHT;
+   const height = ((endMinutes - startMinutes) / 60) * HOUR_HEIGHT;
 
    return { top, height };
 }

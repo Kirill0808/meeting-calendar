@@ -1,3 +1,5 @@
+import clsx from 'clsx';
+
 interface ColorPickerProps {
    colors: string[];
    selected: string;
@@ -11,9 +13,13 @@ export default function ColorPicker({ colors, selected, onChange }: ColorPickerP
             <button
                key={c}
                onClick={() => onChange(c)}
-               className={`w-8 h-8 rounded-full border-2 transition
-            ${selected === c ? 'border-black scale-110' : 'border-transparent'}
-          `}
+               className={clsx(
+                  'w-9 h-9 rounded-full border-2 transition-transform duration-150',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500',
+                  selected === c
+                     ? 'border-[var(--text)] scale-110'
+                     : 'border-transparent hover:scale-105'
+               )}
                style={{ backgroundColor: c }}
             />
          ))}
